@@ -44,7 +44,7 @@ namespace TicketAPI.Controllers
         }
 
 
-        [HttpPost("request/ticket")]
+        [HttpPost("request/tickets")]
         public async Task<ActionResult<Ticket>> PostTodoItem(TicketDto req)
         {
             if (_context.Tickets == null)
@@ -73,6 +73,20 @@ namespace TicketAPI.Controllers
         }
 
 
+        [HttpGet("request/tickets")]
+        public ActionResult<Ticket> GetTodoItems()
+        {
+            if (_context.Tickets == null)
+            {
+                return NotFound();
+            }
+
+            var id = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            var userId = Convert.ToInt64(id);
+
+            var items = _context.Tickets.Where(a => a.UserId == userId).ToList();
+            return Ok(items);
+        }
 
     }
 }
