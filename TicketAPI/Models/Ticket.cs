@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Collections.Generic;
-
-namespace TicketAPI.Models
+﻿namespace TicketAPI.Models
 {
     public class Ticket
     {

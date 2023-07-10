@@ -44,8 +44,6 @@ namespace TicketAPI.Controllers
         }
 
 
-
-
         [HttpPost("request/ticket")]
         public async Task<ActionResult<Ticket>> PostTodoItem(TicketDto req)
         {
