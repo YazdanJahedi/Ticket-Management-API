@@ -1,0 +1,6 @@
+.vs
+*.sln
+**/bin/
+**/obj
+TicketAPI/TicketAPI.csproj
+TicketAPI/TicketAPI.csproj.user
