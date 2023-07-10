@@ -14,10 +14,6 @@ namespace TicketAPI
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
-            /*
-            builder.Services.AddDbContext<ApplicationDbContext>(opt =>
-                opt.UseInMemoryDatabase("DB"));
-            */
 
              builder.Services.AddDbContext<ApplicationDbContext>(opt =>
                      opt.UseSqlServer(builder.Configuration.GetConnectionString("DB")));
