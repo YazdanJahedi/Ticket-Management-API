@@ -64,6 +64,7 @@ namespace TicketAPI.Controllers
                 CreateDate = DateTime.Now,
                 FirstResponseDate = null,
                 CloseDate = null,
+                NumberOfResponses = 0,
             };
 
             _context.Tickets.Add(ticket);
@@ -74,7 +75,7 @@ namespace TicketAPI.Controllers
 
 
         [HttpGet("request/tickets")]
-        public ActionResult<Ticket> GetTodoItems()
+        public ActionResult<Ticket> GetTickes()
         {
             if (_context.Tickets == null)
             {
@@ -86,6 +87,60 @@ namespace TicketAPI.Controllers
 
             var items = _context.Tickets.Where(a => a.UserId == userId).ToList();
             return Ok(items);
+        }
+
+
+        [HttpPost("request/tickets/{ticketId}")]
+        public async Task<ActionResult<Ticket>> PostNewResponse(long ticketId, ResponseDto req)
+        {
+            if (_context.Responses == null || _context.Tickets == null)
+            {
+                return NotFound();
+            }
+
+            var userIdString = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            var userId = Convert.ToInt64(userIdString);
+            var ticket = _context.Tickets.Find(ticketId);
+
+            if (ticket == null)
+            {
+                return BadRequest("ticketId not found");
+            }
+            if (ticket.UserId != userId)
+            {
+                return BadRequest("You do not have access to entered ticket");
+            }
+
+            // upate number of responses and isChecked fields
+            ticket.NumberOfResponses++;
+            ticket.IsChecked = false;
+
+            var userEmail = User.Claims.Where(x => x.Type == ClaimTypes.Email).FirstOrDefault()?.Value;
+
+            _context.Entry(ticket).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            var response = new Response
+            {
+                TicketId = ticketId,
+                IdInTicket = ticket.NumberOfResponses,
+                Writer = userEmail,
+                Text = req.Text,
+                SentDate = DateTime.Now,
+            };
+
+            _context.Responses.Add(response);
+            await _context.SaveChangesAsync();
+
+            return Ok(response);
         }
 
     }
