@@ -85,5 +85,17 @@ namespace TicketAPI.Controllers
             return Ok(response);
         }
 
+        [HttpGet("responses/{ticketId}")]
+        public ActionResult<Ticket> GetResponses(long ticketId)
+        {
+            if (_context.Responses == null)
+            {
+                return NotFound();
+            }
+
+            var items = _context.Responses.Where(a => a.TicketId == ticketId).ToList();
+
+            return Ok(items);
+        }
     }
 }
