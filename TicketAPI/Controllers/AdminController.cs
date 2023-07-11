@@ -97,5 +97,31 @@ namespace TicketAPI.Controllers
 
             return Ok(items);
         }
+
+        [HttpDelete("{ticketId}")]
+        public async Task<IActionResult> DeleteTicket(long ticketId)
+        {
+            if (_context.Tickets == null || _context.Responses == null)
+            {
+                return NotFound();
+            }
+
+            var ticket = await _context.Tickets.FindAsync(ticketId);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            _context.Tickets.Remove(ticket);
+
+            var items = _context.Responses.Where(a => a.TicketId == ticketId).ToList();
+            foreach(var item in items) 
+                _context.Responses.Remove(item);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
