@@ -7,6 +7,7 @@
         public string? Title { get; set; }
         public string? Description { get; set; }
         public bool IsChecked { get; set; }
+        public int NumberOfResponses { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? FirstResponseDate { get; set; }
         public DateTime? CloseDate { get; set; }
